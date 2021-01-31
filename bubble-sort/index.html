@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Bubble Sort</title>
+</head>
+<body>
+<script>
+
+    const array = [14, 4, 24, 5, 9];
+
+    function sort(data) {
+        for (let i = data.length - 1; i >= 1; i--) {
+            for (let j = 0; j < i; j++) {
+                if (data[j] > data[j + 1]) {
+                    let template = data[j];
+                    data[j] = data[j + 1];
+                    data[j + 1] = template;
+                }
+            }
+        }
+        return data;
+    }
+
+    console.log(sort(array));
+
+</script>
+</body>
+</html>
