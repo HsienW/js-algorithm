@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Insertion Sort</title>
+</head>
+<body>
+<script>
+
+    /** 排序規則 **/
+    // 1. 從未排序的陣列中一次只抓一個值
+    // 2. 將當前值從頭開始 or 從尾開始比一次
+    // 3. 將值放到已排列的陣列中的適當位置
+
+    /** 特性 **/
+        // 時間複雜度 O(n^2)
+
+    const array = [14, 4, 37, 52, 909, 72, 799, 2, 33];
+
+    function sort(data) {
+        // 從頭開始全部都會比一次
+        for (let i = 0; i < data.length; i++) {
+            // 如果當前的值小於陣列第一個, 將當前的移動到第一個
+            if (data[i] < data[0]) {
+                let currentValue = data.splice(i, 1)[0];
+                data.unshift(currentValue);
+            }
+            // 因為是從頭開始比, 所以 index 會 -1
+            // 如果當前的值小於 data index -1 中的值
+            if (data[i] < data[i - 1]) {
+                // 因為前面 index 0 已經比過, 所以從 index 1 開始, 由前往後比到當前的 index
+                for (let j = 1; j < i; j++) {
+                    // 若當前的值, 大於比較組的前一位數, 小於比較組的當前位數, 執行插入
+                    if (data[i] >= data[j - 1] && data[i] < data[j]) {
+                        // 取出當前自己 i 位數的值
+                        let currentValue = data.splice(i, 1)[0];
+                        // 插入到比較組的 j 位數之後
+                        data.splice(j, 0, currentValue);
+                    }
+                }
+            }
+        }
+
+        return data;
+    }
+
+    console.log(sort(array));
+
+</script>
+</body>
+</html>
