@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Selection Sort</title>
+</head>
+<body>
+<script>
+
+    /** 排序規則 **/
+    // 1. 從未經過排序的陣列中找到最小值
+    // 2. 將當前找到最小值擺到最左邊
+
+    /** 特性 **/
+    // 時間複雜度 O(n²)
+
+    const array = [14, 4, 24, 5, 9, 72, 101, 2, 33];
+
+    function sort(data) {
+        // 從第一個開始排序
+        // 設第一個為初始最小值
+        for (let i = 0; i < data.length; i++) {
+            // 因為從第二個開始排起, 去比較第一個,
+            // 所以第二層起始 index 是 i + 1 開始
+            for (let j = i + 1; j < data.length; j++) {
+                // 第二層比較, 若找到比當前 data[i] 還小的話, 就讓 data[i] data[j] 互換
+                if (data[j] < data[i]) {
+                    let template = data[i];
+                    data[i] = data[j];
+                    data[j] = template;
+                }
+            }
+        }
+        return data;
+    }
+
+    console.log(sort(array));
+
+</script>
+</body>
+</html>
