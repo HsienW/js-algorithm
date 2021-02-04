@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Merge Sort</title>
+</head>
+<body>
+<script>
+
+    /** 排序規則 **/
+
+    /** 特性 **/
+
+    const array = [14, 4, 24, 5, 9];
+
+    function mergeSort(data) {
+        // 把陣列切割成一個一個的
+        let parts = data.map((value, index) => {
+            return {start: index, end: index};
+        });
+
+        console.log(parts);
+    }
+
+    mergeSort(array);
+
+
+</script>
+</body>
+</html>
