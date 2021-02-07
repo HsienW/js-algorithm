@@ -8,10 +8,13 @@
 <script>
 
     /** 排序規則 **/
+    // 1. 先將陣列拆分成每一個最小的單位 (使用 index 拆分, 並不是直接拆陣列本身)
+    // 2. 每個最小單位倆倆為一組, 從最左邊的組開始每組互相比較
 
     /** 特性 **/
+    // 時間複雜度 O(n log n)
 
-    const array = [14, 4, 24, 5, 9];
+    const array = [14, 84, 24, 5, 9];
 
     function mergeSort(data) {
         /** 進行切割的程序 **/
@@ -22,81 +25,94 @@
                 return {start: index, end: index};
             });
 
-        // 用來存放一邊已經排完, 另一邊剩下的
-        let nextParts = [];
+        while (parts.length > 1) {
+            // 用來存放一邊已經排完, 另一邊剩下的
+            let nextParts = [];
 
-        /** 進行合併的程序 **/
-        // 因為每一輪迴圈都是以左右兩個數字為一組做比較, 所以 i + 2
-        for (let i = 0; i < parts.length; i += 2) {
-            // 檢查這一輪比較, 是否有左右兩邊
-            // 有的話就進入比較, 沒有的話就把剩下的全部放入 nextParts 中
-            if (parts[i + 1]) {
-                /** 準備每一輪要被比較的指針 & data **/
+            /** 進行合併的程序 **/
+            // 因為每一輪迴圈都是以左右兩個數字為一組做比較, 所以 i + 2
+
+            for (let i = 0; i < parts.length; i += 2) {
+                // 檢查這一輪比較, 是否有左右兩邊
+                // 有的話就進入比較, 沒有的話就把剩下的全部放入 nextParts 中
+                if (parts[i + 1]) {
+                    /** 準備每一輪要被比較的指針 & data **/
 
                     // 從 part 中取出這一組要比較的左邊指針
-                const leftPart = parts[i];
-                //  從 part 中取出這一組要比較的右邊指針
-                const rightPart = parts[i + 1];
+                    const leftPart = parts[i];
+                    //  從 part 中取出這一組要比較的右邊指針
+                    const rightPart = parts[i + 1];
 
-                // 使用 leftPart 指針, 從 data 複製出這一組的左陣列
-                const leftArray = data.slice(leftPart.start, leftPart.end + 1);
-                // 使用 rightPart 指針, 從 data 複製出這一組的右陣列
-                const rightArray = data.slice(rightPart.start, rightPart.end + 1);
+                    // 使用 leftPart 指針, 從 data 複製出這一組的左陣列
+                    const leftArray = data.slice(leftPart.start, leftPart.end + 1);
 
-                /** 初始設定每一輪的指針 **/
+                    // 使用 rightPart 指針, 從 data 複製出這一組的右陣列
+                    const rightArray = data.slice(rightPart.start, rightPart.end + 1);
+
+                    /** 初始設定每一輪的指針 **/
 
                     // 每一組都從 index 0 開始比較起
-                let leftIndex = 0;
-                let rightIndex = 0;
+                    let leftIndex = 0;
+                    let rightIndex = 0;
 
-                // allDataIndex 紀錄當前整個 data 的指針位置
-                // 初始從最左邊比較起, 所以是 leftPart 的 start
-                let allDataIndex = leftPart.start;
+                    // allDataIndex 紀錄當前整個 data 的指針位置
+                    // 初始從最左邊比較起, 所以是 leftPart 的 start
+                    let allDataIndex = leftPart.start;
 
-                /** 開始使用指針進行比較 **/
+                    /** 開始使用指針進行比較 **/
 
-                // while 檢查左右兩邊當下的指針, 是否都小於 data 複製來的陣列 (陣列中只會有一個 value 即 [0])
-                // 如果是, 代表當下這組有還沒進行比較過的 value
-                // 如果否, 代表都已經比較過了, 需要把剩下的資料塞到各自的位子
-                while (leftIndex < leftArray.length && rightIndex < rightArray.length) {
-                    // 將左右兩邊複製來的陣列, value 比較大小
-                    // 若左邊小於右邊, 將左邊的 value 放入 data 中
-                    if (leftArray[leftIndex] < rightArray[rightIndex]) {
+                    // while 檢查左右兩邊當下的指針, 是否都小於 data 複製來的陣列 (陣列中只會有一個 value 即 [0])
+                    // 如果是, 代表當下這組有還沒進行比較過的 value
+                    // 如果否, 代表都已經比較過了, 需要把剩下的資料塞到各自的位子
+                    while (leftIndex < leftArray.length && rightIndex < rightArray.length) {
+                        // 將左右兩邊複製來的陣列, value 比較大小
+                        // 若左邊小於右邊, 將左邊的 value 放入 data 中
+                        if (leftArray[leftIndex] < rightArray[rightIndex]) {
+                            data[allDataIndex] = leftArray[leftIndex];
+                            // 接著左邊指針往後一個, 表示已經比過當前個了
+                            leftIndex++;
+                        } else {
+                            // 若左邊大於右邊, 將右邊的 value 放入 data 中
+                            data[allDataIndex] = rightArray[rightIndex];
+                            // 接著右邊指針往後一個, 表示已經比過當前個了
+                            rightIndex++;
+                        }
+
+                        // 最後 allDataIndex 都必須往後一個, 因為已經有排序一輪了
+                        allDataIndex++;
+                    }
+
+                    // 如果一邊的指針小於複製來的陣列長度, 表示那邊還有剩下
+                    // 把左邊剩下的都塞進 data 中
+                    while (leftIndex < leftArray.length) {
                         data[allDataIndex] = leftArray[leftIndex];
-                        // 接著左邊指針往後一個, 表示已經比過當前個了
+                        // 每次 leftIndex & allDataIndex 都必須往後一個
                         leftIndex++;
+                        allDataIndex++;
                     }
-                    // 若左邊大於右邊, 將右邊的 value 放入 data 中
-                    if (leftArray[leftIndex] > rightArray[rightIndex]) {
+                    // 如果剩下右邊, 把右邊剩下的資料都塞進結果中
+                    while (rightIndex < rightArray.length) {
                         data[allDataIndex] = rightArray[rightIndex];
-                        // 接著右邊指針往後一個, 表示已經比過當前個了
                         rightIndex++;
+                        allDataIndex++;
                     }
 
-                    // 最後 allDataIndex 都必須往後一個, 因為已經有排序一輪了
-                    allDataIndex++;
+                    // 最後把下一輪開始要用的指針放入 nextParts 中
+                    // 下一輪的開頭
+                    nextParts.push({start: leftPart.start, end: rightPart.end});
+                } else {
+                    // 若已經沒有另一邊可以比較了, 就把剩下的全部放入 nextParts 中
+                    nextParts.push(parts[i]); // 下一輪要比較的
                 }
-
-                // 如果一邊的指針小於複製來的陣列長度, 表示那邊還有剩下
-                // 把左邊剩下的都塞進 data 中
-                while (leftIndex < leftArray.length) {
-                    data[allDataIndex] = leftArray[leftIndex];
-                    // 每次 leftIndex & allDataIndex 都必須往後一個
-                    leftIndex++;
-                    allDataIndex++;
-                }
-                // 如果剩下右邊, 把右邊剩下的資料都塞進結果中
-                while (rightIndex < rightArray.length) {
-                    data[allDataIndex] = rightArray[rightIndex];
-                    rightIndex++;
-                    allDataIndex++;
-                }
+                console.log(nextParts);
+                console.log('for 結束');
             }
+            parts = nextParts;
         }
-
+        return data;
     }
 
-    mergeSort(array);
+    console.log(mergeSort(array));
 
 
 </script>
