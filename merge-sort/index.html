@@ -55,14 +55,40 @@
 
                 /** 開始使用指針進行比較 **/
 
+                // while 檢查左右兩邊當下的指針, 是否都小於 data 複製來的陣列 (陣列中只會有一個 value 即 [0])
+                // 如果是, 代表當下這組有還沒進行比較過的 value
+                // 如果否, 代表都已經比較過了, 需要把剩下的資料塞到各自的位子
                 while (leftIndex < leftArray.length && rightIndex < rightArray.length) {
+                    // 將左右兩邊複製來的陣列, value 比較大小
+                    // 若左邊小於右邊, 將左邊的 value 放入 data 中
                     if (leftArray[leftIndex] < rightArray[rightIndex]) {
                         data[allDataIndex] = leftArray[leftIndex];
+                        // 接著左邊指針往後一個, 表示已經比過當前個了
                         leftIndex++;
-                    } else {
+                    }
+                    // 若左邊大於右邊, 將右邊的 value 放入 data 中
+                    if (leftArray[leftIndex] > rightArray[rightIndex]) {
                         data[allDataIndex] = rightArray[rightIndex];
+                        // 接著右邊指針往後一個, 表示已經比過當前個了
                         rightIndex++;
                     }
+
+                    // 最後 allDataIndex 都必須往後一個, 因為已經有排序一輪了
+                    allDataIndex++;
+                }
+
+                // 如果一邊的指針小於複製來的陣列長度, 表示那邊還有剩下
+                // 把左邊剩下的都塞進 data 中
+                while (leftIndex < leftArray.length) {
+                    data[allDataIndex] = leftArray[leftIndex];
+                    // 每次 leftIndex & allDataIndex 都必須往後一個
+                    leftIndex++;
+                    allDataIndex++;
+                }
+                // 如果剩下右邊, 把右邊剩下的資料都塞進結果中
+                while (rightIndex < rightArray.length) {
+                    data[allDataIndex] = rightArray[rightIndex];
+                    rightIndex++;
                     allDataIndex++;
                 }
             }
