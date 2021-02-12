@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Queue</title>
+</head>
+<body>
+<script>
+
+    const QueueItem = function (name, priority) {
+        this.name = name;
+        this.priority = priority;
+    }
+
+    const Queue = function () {
+        this.items = [];
+
+        this.addSingleQueue = function (item) {
+            this.items.push(item);
+        }
+        this.addMultipleQueue = function (items) {
+            for (let i = 0; i < items.length; i++) {
+                this.items.push(items[i]);
+            }
+        }
+        this.addMultipleQueueBasisPriority = function (items) {
+            for (let i = 0; i < items.length; i++) {
+                if (this.checkEmpty()) {
+                    this.items.push(items[i]);
+                } else {
+
+                }
+            }
+        }
+        this.addQueue = function (item) {
+            this.items.push(item);
+        }
+        this.removeQueue = function () {
+            this.items.shift();
+        }
+        this.getFront = function () {
+            return this.items[0];
+        }
+        this.getContent = function () {
+            return this.items;
+        }
+        this.getSize = function () {
+            return this.items.length;
+        }
+        this.checkEmpty = function () {
+            return this.items.length === 0;
+        }
+        this.clareQueue = function () {
+            this.items.length = 0;
+        }
+    }
+
+    // const testQueue = new Queue();
+    //
+    // console.log(testQueue.getContent());
+    //
+    // testQueue.addQueue(10);
+    // testQueue.addQueue(20);
+    // testQueue.addQueue(30);
+    //
+    // console.log(testQueue.getContent());
+    //
+    // testQueue.removeQueue();
+    //
+    // console.log(testQueue.getContent());
+
+    const andy = new QueueItem('Andy', 4);
+    const bill = new QueueItem('Bill', 1);
+    const candy = new QueueItem('Candy', 7);
+    const david = new QueueItem('David', 6);
+
+    const userQueue = new Queue;
+
+    userQueue.addMultipleQueue([andy, bill, candy, david]);
+
+    console.log(userQueue.getContent());
+
+</script>
+</body>
+</html>
