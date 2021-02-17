@@ -13,45 +13,48 @@
     }
 
     const Queue = function () {
-        this.items = [];
+        this.data = [];
 
         this.addSingleQueue = function (item) {
-            this.items.push(item);
+            this.data.push(item);
         }
         this.addMultipleQueue = function (items) {
             for (let i = 0; i < items.length; i++) {
-                this.items.push(items[i]);
+                this.data.push(items[i]);
             }
         }
-        this.addMultipleQueueBasisPriority = function (items) {
-            for (let i = 0; i < items.length; i++) {
-                if (this.checkEmpty()) {
-                    this.items.push(items[i]);
-                } else {
-
+        this.addMultipleQueueBasisPriority = function (item) {
+            if (this.checkEmpty()) {
+                this.data.push(item);
+                return
+            }
+            for (let i = 0; i < this.data.length; i++) {
+                if (item.priority < this.data[i].priority) {
+                    this.data.splice(i, 0, item);
+                    return;
                 }
             }
         }
         this.addQueue = function (item) {
-            this.items.push(item);
+            this.data.push(item);
         }
         this.removeQueue = function () {
-            this.items.shift();
+            this.data.shift();
         }
         this.getFront = function () {
-            return this.items[0];
+            return this.data[0];
         }
         this.getContent = function () {
-            return this.items;
+            return this.data;
         }
         this.getSize = function () {
-            return this.items.length;
+            return this.data.length;
         }
         this.checkEmpty = function () {
-            return this.items.length === 0;
+            return this.data.length === 0;
         }
         this.clareQueue = function () {
-            this.items.length = 0;
+            this.data.length = 0;
         }
     }
 
@@ -79,6 +82,14 @@
     userQueue.addMultipleQueue([andy, bill, candy, david]);
 
     console.log(userQueue.getContent());
+
+    setTimeout(() => {
+        const eagle = new QueueItem('Eagle', 2);
+
+        userQueue.addMultipleQueueBasisPriority(eagle)
+
+        console.log(userQueue.getContent());
+    }, 2000)
 
 </script>
 </body>
