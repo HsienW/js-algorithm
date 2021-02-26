@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Backtrack</title>
+</head>
+<body>
+<script>
+
+    const data = [
+        {
+            id: 1,
+            children: [
+                {
+                    id: 2,
+                    children: [
+                        {
+                            id: 3,
+                            children: []
+                        },
+                        {
+                            id: 3,
+                            children: [
+                                {
+                                    id: 4,
+                                    children: []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 5,
+                    children: [
+                        {
+                            id: 6,
+                            children: [
+                                {
+                                    id: 7,
+                                    children: []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+
+
+    function backtrack(data, condition) {
+        const result = [];
+        const backtracking = function (data, condition) {
+            if (data.length !== 0) {
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i].id === condition) {
+                        result.push(data[i]);
+                        return;
+                    }
+
+                    if (data[i].children.length !== 0) {
+                        backtracking(data[i].children, condition);
+                    }
+                }
+            }
+        }
+        backtracking(data, condition);
+
+        return result;
+    }
+
+    console.log(backtrack(data, 2));
+
+</script>
+</body>
+</html>
