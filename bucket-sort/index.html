@@ -7,74 +7,96 @@
 <body>
 <script>
 
-    const data = [10, 32, 21, 76, 91, 35];
+    /** 排序規則 **/
+    // 1. 是非比較型的排序
+    // 2. 原理是建立一些桶子, 每個桶子對應一段區間, 再把待排序的 data 放入桶子中
+    // 3. 桶子總數需比 data 多 1, 以便處理有 0 的狀況
+    // 4. 每個桶子內再各自排序好裡面的 data
+    // 5. 最後把桶子內排好的 data 取出, 再放回原本 data 中
 
-    // InsertionSort to be used within bucket sort
+    /** 特性 **/
+    // 使用 Bucket sort 需要事先知道資料的範圍與分佈, 才能決定桶子對應的區間
+    // 時間複雜度 特定情況為 O(n)
+    // 時間複雜度 最壞的情況是 O(n²), 等於 data 進入桶子前分布不均勻, 全部跑過一遍做排序
+    // 每個桶子內的排序一般使用 插入排序 or 快速排序
+
+    const data = [10, 32, 21, 76, 91, 35, 9, 64];
+
+    // 用於桶子內排序的插入排序法
     function insertionSort(data) {
-        let length = data.length;
-
-        for (let i = 1; i < length; i++) {
-            let temp = data[i];
-            for (let j = i - 1; j >= 0 && data[j] > temp; j--) {
-                data[j + 1] = data[j];
-                data[j + 1] = temp;
+        for (let i = 0; i < data.length; i++) {
+            if (data[i] < data[0]) {
+                let currentValue = data.splice(i, 1)[0];
+                data.unshift(currentValue);
+            }
+            if (data[i] < data[i - 1]) {
+                for (let j = 1; j < i; j++) {
+                    if (data[i] >= data[j - 1] && data[i] < data[j]) {
+                        let currentValue = data.splice(i, 1)[0];
+                        data.splice(j, 0, currentValue);
+                    }
+                }
             }
         }
         return data;
     }
 
-
-    function bucketSort(array, bucketSize) {
-        if (array.length === 0) {
-            return array;
+    function bucketSort(data, bucketSize) {
+        // 若 data 沒有東西, 就直接回傳
+        if (data.length === 0) {
+            return data;
         }
 
-        // Declaring lets
-        let i;
-        let minValue = array[0];
-        let maxValue = array[0];
-        // let bucketSize = bucketSize || 5;
+        // 設最大值與最小值, 用於取出區間
+        // 這裡都先預設成 data[0]
+        let minValue = data[0];
+        let maxValue = data[0];
 
-        // Setting min and max values
-        array.forEach((currentVal) => {
-            if (currentVal < minValue) {
-                minValue = currentVal;
+        // 跑過全部 data 設定本次 data 的最大最小
+        data.forEach((currentValue) => {
+            if (currentValue < minValue) {
+                minValue = currentValue;
             }
-            if (currentVal > maxValue) {
-                maxValue = currentVal;
+            if (currentValue > maxValue) {
+                maxValue = currentValue;
             }
         })
 
-        // Initializing buckets
+        // 建立每個桶子
+        // 最大值 - 最小值 + 1 為了確保, 桶子數大於最大值的區間
         let bucketCount = Math.floor((maxValue - minValue) / bucketSize) + 1;
-
-
-
         let allBuckets = new Array(bucketCount);
 
-        for (i = 0; i < allBuckets.length; i++) {
+        // 這裡都先預設每個桶子都是空的
+        // 從區間 0 開始
+        for (let i = 0; i < allBuckets.length; i++) {
             allBuckets[i] = [];
         }
 
-        // Pushing values to buckets
-        array.forEach(function (currentVal) {
-            allBuckets[Math.floor((currentVal - minValue) / bucketSize)].push(currentVal);
+        // 對每個桶子塞入, 對應區間內應該有的數字
+        data.forEach((currentValue) => {
+            allBuckets[Math.floor((currentValue - minValue) / bucketSize)].push(currentValue);
         });
 
-        // Sorting buckets
-        array.length = 0;
+        // 清空本來的 data
+        data.length = 0;
 
-        allBuckets.forEach(function (bucket) {
-            insertionSort(bucket);
-            bucket.forEach(function (element) {
-                array.push(element)
+        // 進入每個桶子執行排序
+        allBuckets.forEach((bucket) => {
+            let sortData = insertionSort(bucket);
+
+            // 每個桶子排序完之後的結果, push 進本來的 data
+            sortData.forEach((item) => {
+                data.push(item)
             });
         });
 
-        return array;
+        return data;
     }
 
     console.log(bucketSort(data, 10));
+
+    // console.log(Math.floor(2/10));
 
 </script>
 </body>
