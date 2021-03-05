@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Counting Sort</title>
+</head>
+<body>
+<script>
+
+    /** 排序規則 **/
+
+    /** 特性 **/
+
+    // const data = [10, 32, 21, 76, 91, 32, 9, 64, 21, 57];
+    const data = [1, 5, 8, 2, 2, 9];
+
+    function countingSort(data) {
+        let maxValue = data[0];
+        let valueInterval = null;
+        let countKey = [];
+        let prefixIndex = [];
+
+        // 跑過全部 data 設定本次 data 的最大最小
+        data.forEach((currentValue, index) => {
+            if (currentValue > maxValue) {
+                maxValue = currentValue;
+            }
+        })
+
+        for (let i = 0; i < data.length; i++) {
+            countKey[i] = 0;
+            for (let j = 0; j < countKey.length; j ++) {
+                if (data[i] === data[j]) {
+                    countKey[i] = countKey[i] += 1;
+                }
+            }
+        }
+
+        // for (let i = 0; i < data.length; i++) {
+        //     prefixIndex[i] = 0;
+        //     for (let j = 0; j < countKey.length; j ++) {
+        //         let template = countKey[j];
+        //         if (j < i) {
+        //             prefixIndex[i] = template + countKey[j];
+        //         }
+        //     }
+        // }
+
+        console.log(countKey);
+        // console.log(prefixIndex);
+    }
+
+    countingSort(data);
+
+</script>
+</body>
+</html>
