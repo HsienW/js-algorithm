@@ -11,12 +11,13 @@
 
     /** 特性 **/
 
-    // const data = [10, 32, 21, 76, 91, 32, 9, 64, 21, 57];
+        // const data = [10, 32, 21, 76, 91, 32, 9, 64, 21, 57];
     const data = [1, 5, 8, 2, 2, 9];
 
     function countingSort(data) {
         let maxValue = data[0];
         let valueInterval = null;
+        // let scope = [];
         let countKey = [];
         let prefixIndex = [];
 
@@ -27,27 +28,33 @@
             }
         })
 
-        for (let i = 0; i < data.length; i++) {
+        // 使用最大值劃分出範圍後, 將 countKey 每個計數先設為 0
+        for (let i = 0; i <= maxValue; i++) {
             countKey[i] = 0;
-            for (let j = 0; j < countKey.length; j ++) {
-                if (data[i] === data[j]) {
-                    countKey[i] = countKey[i] += 1;
+        }
+
+        // countKey 將對應 0 ~ maxValue 的整數, 可以理解為一個計數表
+        // 跑過全部 data 一遍, 而 data[i] 將對應每個出現在 countKey 計數表上的 value
+        // value 每出現一次, 就在計數表上對應的位子執行 + 1
+        for (let i = 0; i < data.length; i++) {
+            countKey[data[i]] += 1;
+        }
+
+        // 使用 countKey 劃分出範圍後, 將 prefixIndex 每個計數先設為 0
+        // prefixIndex 將對應計數表與待排序的 data
+        // 跑過全部 countKey 一遍, 而 prefixIndex[i] 對應 data i 位子前 countKey value 的總和
+        for (let i = 0; i < countKey.length; i++) {
+            prefixIndex[i] = 0;
+            for (let j = 0; j < i; j ++) {
+                if (j < i) {
+                    prefixIndex[i] = prefixIndex[i] + countKey[j];
                 }
             }
         }
 
-        // for (let i = 0; i < data.length; i++) {
-        //     prefixIndex[i] = 0;
-        //     for (let j = 0; j < countKey.length; j ++) {
-        //         let template = countKey[j];
-        //         if (j < i) {
-        //             prefixIndex[i] = template + countKey[j];
-        //         }
-        //     }
+        // for(let i = 0; i < prefixIndex.length; i++) {
+        //     data[i] = data[prefixIndex[i]]
         // }
-
-        console.log(countKey);
-        // console.log(prefixIndex);
     }
 
     countingSort(data);
