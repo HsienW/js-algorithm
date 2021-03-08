@@ -45,16 +45,60 @@
         // 跑過全部 countKey 一遍, 而 prefixIndex[i] 對應 data i 位子前 countKey value 的總和
         for (let i = 0; i < countKey.length; i++) {
             prefixIndex[i] = 0;
-            for (let j = 0; j < i; j ++) {
+            for (let j = 0; j < i; j++) {
                 if (j < i) {
                     prefixIndex[i] = prefixIndex[i] + countKey[j];
                 }
             }
         }
 
-        // for(let i = 0; i < prefixIndex.length; i++) {
-        //     data[i] = data[prefixIndex[i]]
-        // }
+        console.log(countKey);
+        console.log(JSON.stringify(countKey));
+
+        // 0, 1, 2, 0, 0, 1, 0, 0, 1, 1
+        // 0, 1, 2, 0, 0, 1, 0, 0, 1, 1
+        // 0, 0, 2, 0, 0, 1, 0, 0, 1, 1
+        // 0, 0, 1, 0, 0, 1, 0, 0, 1, 1
+        // 0, 0, 0, 0, 0, 1, 0, 0, 1, 1
+        // 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+        // 0, 0, 0, 0, 0, 0, 0, 0, 0, 1
+        // 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+
+        let j = 0;
+
+        // I
+        // 0
+        // 1
+        // 2
+        // 3
+        // 5
+        // 8
+        // 9
+
+        // J
+        // 0
+        // 1
+        // 2
+        // 3
+        // 4
+        // 5
+
+        // 1, 5, 8, 2, 2, 9
+        // 1, 5, 8, 2, 2, 9
+        // 1, 2, 8, 2, 2, 9
+        // 1, 2, 2, 2, 2, 9
+        // 1, 2, 2, 5, 2, 9
+        // 1, 2, 2, 5, 8, 9
+        // 1, 2, 2, 5, 8, 9
+
+        for (let i = 0; i <= maxValue; i++) {
+            console.log(countKey);
+            // while (countKey[i] > 0) {
+            //     // data[j] = i;
+            //     // j++;
+            //     // countKey[i]--;
+            // }
+        }
     }
 
     countingSort(data);
