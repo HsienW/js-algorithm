@@ -8,28 +8,25 @@
 <script>
 
     /** 排序規則 **/
+    // 1. 是非比較型的排序
+    // 2. 原理是紀錄每個整數出現的次數跟分布位置去排序
 
     /** 特性 **/
+    // 僅適合整數 (正負數都可以)
+    // 整數範圍不能夠太大
+    // 需要建立一個出現的次數的計數表, 會有額外的記憶體開
+    // 使用 Counting Sort 需要事先知道整數的範圍與分佈, 例如: 考試成績一定是 0 ~ 100 之間的正整數
+    // 時間複雜度為 O(n + k)
 
-        // const data = [10, 32, 21, 76, 91, 32, 9, 64, 21, 57];
-    const data = [1, 5, 8, 2, 2, 9];
+    const data = [10, 32, 21, 76, 91, 32, 9, 64, 21, 57];
 
-    function countingSort(data) {
-        let maxValue = data[0];
-        let valueInterval = null;
-        // let scope = [];
-        let countKey = [];
-        let prefixIndex = [];
-
-        // 跑過全部 data 設定本次 data 的最大最小
-        data.forEach((currentValue, index) => {
-            if (currentValue > maxValue) {
-                maxValue = currentValue;
-            }
-        })
+    function countingSort(data, minValue, maxValue) {
+        let checkIndex = 0;
+        let countKey = []; // 計數表
+        // let prefixIndex = [];
 
         // 使用最大值劃分出範圍後, 將 countKey 每個計數先設為 0
-        for (let i = 0; i <= maxValue; i++) {
+        for (let i = minValue; i <= maxValue; i++) {
             countKey[i] = 0;
         }
 
@@ -40,68 +37,38 @@
             countKey[data[i]] += 1;
         }
 
-        // 使用 countKey 劃分出範圍後, 將 prefixIndex 每個計數先設為 0
-        // prefixIndex 將對應計數表與待排序的 data
-        // 跑過全部 countKey 一遍, 而 prefixIndex[i] 對應 data i 位子前 countKey value 的總和
-        for (let i = 0; i < countKey.length; i++) {
-            prefixIndex[i] = 0;
-            for (let j = 0; j < i; j++) {
-                if (j < i) {
-                    prefixIndex[i] = prefixIndex[i] + countKey[j];
-                }
+        // // 使用 countKey 劃分出範圍後, 將 prefixIndex 每個計數先設為 0
+        // // prefixIndex 將對應計數表與待排序的 data
+        // // 跑過全部 countKey 一遍, 而 prefixIndex[i] 對應 data i 位子前 countKey value 的總和
+        // for (let i = 0; i < countKey.length; i++) {
+        //     prefixIndex[i] = 0;
+        //     for (let j = 0; j < i; j++) {
+        //         if (j < i) {
+        //             prefixIndex[i] = prefixIndex[i] + countKey[j];
+        //         }
+        //     }
+        // }
+
+        // 使用 minValue & maxValue 劃分出 value 範圍, 該範圍也是這次排序全部會出現的 value
+        // 這裡的 for 跑過的 i 是 countKey 的 index, 同時也是一路遞增上去做檢查要排序的 value
+
+        for (let i = minValue; i <= maxValue; i++) {
+            // 若 countKey 大於 0 就是該數字有出現在計數表上, 需要做排序
+            while (countKey[i] > 0) {
+                // checkIndex 從 0 開始, 用來檢查數字重複出現時排順序
+                // 將 i 的 value 按順序塞入 data 中, 因為 i 是 for index 同時也是 value 範圍
+                data[checkIndex] = i;
+                // 當檢查完一個計數表上有的 value, checkIndex 遞增一個往後排
+                checkIndex++;
+                // 而 countKey (計數表) 上就必須遞減一個, 因為已經排過了, 最終計數表上會全部為 0, 表示已經排完
+                countKey[i]--;
             }
         }
 
-        console.log(countKey);
-        console.log(JSON.stringify(countKey));
-
-        // 0, 1, 2, 0, 0, 1, 0, 0, 1, 1
-        // 0, 1, 2, 0, 0, 1, 0, 0, 1, 1
-        // 0, 0, 2, 0, 0, 1, 0, 0, 1, 1
-        // 0, 0, 1, 0, 0, 1, 0, 0, 1, 1
-        // 0, 0, 0, 0, 0, 1, 0, 0, 1, 1
-        // 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
-        // 0, 0, 0, 0, 0, 0, 0, 0, 0, 1
-        // 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-
-        let j = 0;
-
-        // I
-        // 0
-        // 1
-        // 2
-        // 3
-        // 5
-        // 8
-        // 9
-
-        // J
-        // 0
-        // 1
-        // 2
-        // 3
-        // 4
-        // 5
-
-        // 1, 5, 8, 2, 2, 9
-        // 1, 5, 8, 2, 2, 9
-        // 1, 2, 8, 2, 2, 9
-        // 1, 2, 2, 2, 2, 9
-        // 1, 2, 2, 5, 2, 9
-        // 1, 2, 2, 5, 8, 9
-        // 1, 2, 2, 5, 8, 9
-
-        for (let i = 0; i <= maxValue; i++) {
-            console.log(countKey);
-            // while (countKey[i] > 0) {
-            //     // data[j] = i;
-            //     // j++;
-            //     // countKey[i]--;
-            // }
-        }
+        return data;
     }
 
-    countingSort(data);
+    console.log(countingSort(data, 0, 100));
 
 </script>
 </body>
