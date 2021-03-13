@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Dynamic Programming</title>
+</head>
+<body>
+<script>
+
+    /** 原理 **/
+    // 1. 把原本的大問題分解成一個個子問題去求解
+    // 2. 最優化原則, 大問題的最優解包含子問題最優解, 稱為有最優子結構
+    // 3. 無後效性, 即某階段狀態一旦確定, 就不受這個狀態以後決策的影響(某狀態以後的過程不會影響以前的狀態，只與當前狀態有關)
+    // 4. 子問題有重疊, 就是每個子問題之間是不獨立的, 上一個子問題會被下一個子問題求解時重複用到(可能多次用到)
+
+    /** 適用情形 **/
+    // 問題滿足原理的四項
+
+
+    /** 以費氏數列 (Fibonacci) 為例 **/
+    // 費氏數列規則
+    // 1. 最前面的兩項為 1 (就是 index 0 & index 1 都為 1)
+    // 2. 從第三項開始的值, 即為前面兩項相加的結果
+
+    // 壞的例子, 沒經過動態規劃的處理
+    // 缺點: 從第三項開始的計算, 會產生相同子問題重複計算的問題
+    function badFibonacci(n) {
+        // 若 n 的值小於等於2的話, 直接回傳 1
+        if (n > 0 && n <= 2) {
+            return 1;
+        }
+        // 進行遞迴, 算完回傳 n 前面兩項的結果總和
+        return badFibonacci(n - 1) + badFibonacci(n - 2);
+    }
+
+
+    // 好的例子, 使用動態規劃
+    // 優點: 用一個暫存的 array, 儲存從第三項開始的計算出來的結果, 並傳給下一次遞迴使用, 即可避免子問題重複計算
+    function wellFibonacci(n, template) {
+        // 若 template 中的第 n 個有值, 代表已經有資料存在 template 中了 (上一次傳遞下來的結果)
+        // 在重複用到的情況, 只需直接返回 template[n]
+        if (template[n] !== undefined) {
+            return template[n];
+        }
+        // 若 n 的值小於等於2的話, 直接回傳 1
+        if (n > 0 && n <= 2) {
+            return 1;
+        }
+        // 進行遞迴, 算完將 n 前面兩項的結果總和放入 result 變數
+        let result = wellFibonacci(n - 1, template) + wellFibonacci(n - 2, template);
+        // 將 result 變數的值, 放入應在 template 中的 n (index)
+        template[n] = result;
+        return result;
+    }
+
+    let template = [];
+
+    console.log(wellFibonacci(50, template));
+
+
+</script>
+</body>
+</html>
