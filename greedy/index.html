@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Greedy</title>
+</head>
+<body>
+<script>
+
+    /** 原理 **/
+    // 1. 把原本的大問題分解成一個個子問題去求解
+    // 2. 最優化原則, 大問題的最優解包含子問題最優解, 稱為有最優子結構
+    // 3. 貪婪選擇性, 每次處理子問題都選擇最佳解, 期望推砌出整體大問題最佳解
+    // 4. 無後效性, 即某階段狀態一旦確定, 就不受這個狀態以後決策的影響
+
+    /** 特性 **/
+    // 如果看到一組資料中, 希望能從中選出幾筆, 且在滿足某些限制條件下, 同時達到最大化的期望值時就可以使用貪婪
+    // 與動態規劃法(dynamic-programming) 類似, 差別在於貪婪每次都只顧當前選出最佳解, 不顧整體最佳解
+    // 而動態規劃法目的是一開始就向著找出整體大問題最佳解
+
+
+    // 貨幣面額 1 5 10 50 100 1000
+
+    const denomination = [1000, 100, 71, 50, 10, 5, 1];
+
+    function getDenomination(money, coinArray) {
+        console.log(money);
+        let current = money;
+        let changedCoin;
+        let overage;
+        let result = [];
+
+        if (money <= 0) {
+            return;
+        }
+
+        for (let i = 0; i < coinArray.length; i++) {
+            changedCoin = Math.floor(current / coinArray[i]);
+            overage = Math.floor(current % coinArray[i]);
+            result.push(`面額 ${coinArray[i]} 可換 ${changedCoin} 張`);
+            current = overage;
+        }
+        console.log(result);
+    }
+
+    getDenomination(2494, denomination);
+
+</script>
+</body>
+</html>
