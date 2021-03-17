@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Dictionary</title>
+</head>
+<body>
+<script>
+
+    const Dictionary = function () {
+        this.items = {};
+    }
+
+    Dictionary.prototype.set = function (key, value) {
+        this.items[key] = value;
+    };
+
+    Dictionary.prototype.remove = function (key) {
+        if (this.has(key)) {
+            delete this.items[key];
+            return true;
+        }
+        return false;
+    };
+
+    Dictionary.prototype.has = function (key) {
+        return this.items.hasOwnProperty(key);
+    };
+
+    Dictionary.prototype.get = function (key) {
+        return this.has(key) ? this.items[key] : undefined;
+    };
+
+    Dictionary.prototype.clear = function () {
+        this.items = {};
+    };
+
+    Dictionary.prototype.getSize = function () {
+        let count = 0;
+        for (let key of Object.keys(this.items)) {
+            count ++;
+        }
+        return count;
+    };
+
+    Dictionary.prototype.getKeys = function () {
+        return Object.keys(this.items);
+    };
+
+    Dictionary.prototype.getValues = function () {
+        let values = [];
+        for (let key of Object.keys(this.items)) {
+            values.push(this.items[key]);
+        }
+        return values;
+    };
+
+    const test = new Dictionary();
+
+    test.set('name', '123');
+    test.set('age', 18);
+
+    console.log(test.get('age'));
+    console.log(test.has('name'));
+
+    console.log(test.getKeys());
+    console.log(test.getValues());
+    console.log(test.getSize());
+
+</script>
+</body>
+</html>
