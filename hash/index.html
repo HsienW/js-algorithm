@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Hash</title>
+</head>
+<body>
+<script>
+
+    const changeHashValue = 37;
+
+    const HashTable = function () {
+        this.table = {};
+        this.hash = null;
+    }
+
+    // hash function
+    HashTable.prototype.getHashTableCode = function (key) {
+        this.hash = null;
+        for (let i = 0; i < key.length; i++) {
+            // charCodeAt(string) 會回傳指定字串內字元的 Unicode (中文也可以)
+            this.hash += key.charCodeAt(i);
+        }
+        // changeHashValue 為縮小 key 的值用的, 無特別規定
+        return this.hash % changeHashValue;
+    }
+
+    HashTable.prototype.hasItem = function (key) {
+        // 使用 key 讓 hash function 產生的 position
+        const position = this.getHashTableCode(key);
+        return this.table.hasOwnProperty(position);
+    };
+
+    HashTable.prototype.addItem = function (key, value) {
+        // 使用 key 讓 hash function 產生的 position
+        const position = this.getHashTableCode(key);
+        // 對應 position 往 hash table 放入 value
+        this.table[position] = value;
+    }
+
+    HashTable.prototype.getTable = function () {
+        return this.table;
+    }
+
+    HashTable.prototype.getItem = function (key) {
+        // 使用 key 讓 hash function 產生的 position
+        const position = this.getHashTableCode(key);
+        // 透過 position 找到對應存在  hash table 的 value 並回傳
+        return this.table[position];
+    }
+
+    HashTable.prototype.removeItem = function (key) {
+        if (this.hasItem(key)) {
+            // 使用 key 讓 hash function 產生的 position
+            const position = this.getHashTableCode(key);
+            // 由於不能改變陣列長度(因為會影響到其它對應位置), 所以將值給定 undefined
+            this.table[position] = undefined;
+            return true;
+        }
+        return false;
+    }
+
+    const test = new HashTable();
+
+    test.addItem('測試', '我是 value');
+    console.log(test.getTable());
+    console.log(test.getItem('測試'));
+    console.log(test.getItem('測試'));
+    console.log(test.getItem('測試'));
+    console.log(test.removeItem('測試'));
+    console.log(test.getItem('測試'));
+
+
+
+</script>
+</body>
+</html>
