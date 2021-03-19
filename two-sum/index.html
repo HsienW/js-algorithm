@@ -7,29 +7,36 @@
 <body>
 <script>
 
-    const data = [11, 15, 2, 17, 1, 32, 8];
+    /** 以 Hash Map 為例 **/
+    // 1. 在一組 array 中找出兩個數, 其加總恰等於 target
+    // 2. 每個數不能被重複使用, 且必剛好只有一個解
 
-    function twoSum(nums, target) {
-        let map = {};
-        for (let i = 0; i < nums.length; i++) {
-            let num1 = nums[i]; // 11
-            let num2 = target - num1; // 9-11=-2
+    /** 思路 **/
+    // 1. 記錄下每個 value 與 target 的餘數
+    // 2. 將 value 變成 key, index 變成 value 記錄進去 hashMap, 等待下次檢查
+    // 3. 使用當前的餘數去 hashMap 中檢查, 是否有與已經存在的 key (先前的餘數) 相同
 
-            console.log(i);
-            console.log(num1);
-            console.log(num2);
-            console.log(map);
-            console.log(map[num2]);
+    const data = [11, 1, 3, 10, 6];
 
-            if (map[num2] >= 0) {
-                console.log('check');
-                return [map[num2], i]
+    function twoSum(data, target) {
+        // 建立一個 hashMap
+        let hashMap = {};
+        for (let i = 0; i < data.length; i++) {
+            // currentValue 取出當前 index 的值
+            let currentValue = data[i];
+
+            // remainder 紀錄用 target 減去 currentValue 之後的餘數
+            let remainder = target - currentValue;
+
+            // 用餘數當成 key 去搜尋 hashMap 中是否跟先前存入的 value (key) 相同
+            // 有的話表示當前 index 的 value 與它相加可以滿足 target
+            if (hashMap[remainder] >= 0) {
+                return [hashMap[remainder], i]
             }
-            map[num1] = i;
-
-            console.log(map);
+            // 沒有的話, 就將 value 變成 key, index 變成 value 記錄進去 hashMap
+            hashMap[currentValue] = i;
         }
-        return map;
+        return hashMap;
     }
 
     console.log(twoSum(data, 9));
