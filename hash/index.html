@@ -7,6 +7,8 @@
 <body>
 <script>
 
+    /** General Hash Table **/
+
     const changeHashValue = 37;
 
     const HashTable = function () {
@@ -62,16 +64,91 @@
 
     const test = new HashTable();
 
-    test.addItem('測試', '我是 value');
-    console.log(test.getTable());
-    console.log(test.getItem('測試'));
-    console.log(test.getItem('測試'));
-    console.log(test.getItem('測試'));
-    console.log(test.removeItem('測試'));
-    console.log(test.getItem('測試'));
+    // test.addItem('測試', '我是 value');
+    // console.log(test.getTable());
+    // console.log(test.getItem('測試'));
+    // console.log(test.getItem('測試'));
+    // console.log(test.getItem('測試'));
+    // console.log(test.removeItem('測試'));
+    // console.log(test.getItem('測試'));
 
+    /** Key Collision Hash Table **/
+    // hash table 的 key 可能產生重複的, 導致 value 產生後蓋前的問題 (稱為 Hash Collision)
+    // 解法:
+    // 1. Separate Chaining: 使用 linked list 來裝 有 collision 的 value
+    // 2. Open Addressing: 若當前 key 已經存在 value, 就檢查 key + 1 的位子是否有空, 有的話就存, 沒就在 + 1 往下找
 
+    /** Separate Chaining (Linked List 解法) **/
 
+    // 放入 bucket(linked list) 中的節點, 會記錄上一個與下一個
+    const LinkedNode = function (value, prev, next) {
+        this.value = value;
+        this.prev = prev;
+        this.next = next;
+    }
+
+    const LinkList = function () {
+        this.head = null;
+        this.tail = null;
+        this.lenght = 0;
+        this.addNodeToHead = function (node) {
+            const newNode = node;
+            newNode.prev = null;
+            newNode.next = this.head;
+            this.head = newNode;
+            this.lenght += 1;
+        }
+    }
+
+    const SeparateChainingHashTable = function () {
+        this.table = [];
+        this.hash = null;
+    }
+
+    // hash function
+    SeparateChainingHashTable.prototype.getHashTableCode = function (key) {
+        this.hash = null;
+        for (let i = 0; i < key.length; i++) {
+            // charCodeAt(string) 會回傳指定字串內字元的 Unicode (中文也可以)
+            this.hash += key.charCodeAt(i);
+        }
+        // changeHashValue 為縮小 key 的值用的, 無特別規定
+        return this.hash % changeHashValue;
+    }
+
+    SeparateChainingHashTable.prototype.addItem = function (key, value) {
+        const position = this.getHashTableCode(key);
+        const bucket = new LinkList(value);
+        const bucketNode = new LinkedNode(value, null, null);
+
+        if (!this.table[position]) {
+            this.table[position] = bucket;
+            this.table[position].addNodeToHead(bucketNode);
+            return;
+        }
+
+        let currentBucketNode = this.table[position].head;
+
+        if (!currentBucketNode.next) {
+            currentBucketNode.next = bucketNode;
+            bucketNode.prev = currentBucketNode;
+            return;
+        }
+
+        while (currentBucketNode.next) {
+            currentBucketNode = currentBucketNode.next;
+        }
+        currentBucketNode.next = bucketNode;
+        bucketNode.prev = currentBucketNode;
+    }
+
+    const separateChainingHash = new SeparateChainingHashTable();
+
+    separateChainingHash.addItem('測試', '我是 value');
+    separateChainingHash.addItem('測試', '我是 value 2');
+    separateChainingHash.addItem('測試', '我是 value 3');
+
+    console.log(separateChainingHash);
 </script>
 </body>
 </html>
