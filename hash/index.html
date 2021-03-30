@@ -80,6 +80,10 @@
 
     /** Separate Chaining (Linked List 解法) **/
 
+    // 優點:
+    // 1. 可以自由的增加 key 去存放, 不用在意衝突
+    // 2. 相較 open addressing 解法更為簡單粗暴
+
     // 缺點:
     // 1. linked list 使用了多餘的記憶體空間去存放 value
     // 2. 若是 chaining 產生多個, 要尋找 linked list 中某個值, 必須從頭開始找
