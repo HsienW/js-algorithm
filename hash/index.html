@@ -80,23 +80,27 @@
 
     /** Separate Chaining (Linked List 解法) **/
 
+    // 缺點:
+    // 1. linked list 使用了多餘的記憶體空間去存放 value
+    // 2. 若是 chaining 產生多個, 要尋找 linked list 中某個值, 必須從頭開始找
+
     // 放入 bucket(linked list) 中的節點, 會記錄上一個與下一個
     const LinkedNode = function (value, prev, next) {
-        this.value = value;
-        this.prev = prev;
-        this.next = next;
-    }
+            this.value = value;
+            this.next = null;
+            this.prev = null;
+        }
 
     const LinkList = function () {
         this.head = null;
         this.tail = null;
-        this.lenght = 0;
+        this.length = 0;
         this.addNodeToHead = function (node) {
             const newNode = node;
             newNode.prev = null;
             newNode.next = this.head;
             this.head = newNode;
-            this.lenght += 1;
+            this.length += 1;
         }
     }
 
@@ -147,6 +151,8 @@
     separateChainingHash.addItem('測試', '我是 value');
     separateChainingHash.addItem('測試', '我是 value 2');
     separateChainingHash.addItem('測試', '我是 value 3');
+    separateChainingHash.addItem('測試2', '1111');
+    separateChainingHash.addItem('測試3', '2222');
 
     console.log(separateChainingHash);
 </script>
