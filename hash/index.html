@@ -9,6 +9,13 @@
 
     /** General Hash Table **/
 
+    // 以往使用 array 當作 table, key 是 index, 會產生 Key 的範圍非常大, 但 Key 的數量相對很少, 會浪費記憶體空
+    // 例如: key 只有 3 個值 2 51 99, 但是 table size 就至少要有 100
+    // 目的: hash table 希望能夠將存放 data table 的 size 降到真正有使用到的 Key 數量減少記憶體浪費
+    // key = k = 用來放入 hash function 並產出 mapping table index 的
+    // table = m = 實際上 table 的大小
+
+
     const changeHashValue = 37;
 
     const HashTable = function () {
@@ -159,6 +166,18 @@
     separateChainingHash.addItem('測試3', '2222');
 
     console.log(separateChainingHash);
+
+    /** Open Addressing 解法 **/
+
+    // Open Addressing 當遇到 hash chaining 並不會在同一個 key 位子再產生額外空間, 而是會去尋找下一個位子
+    // 例如: 往下找 key + 1, 沒位子就一直往下找, 直到有空間, 稱為 probing
+
+    // 常見的 probing 有 3種:
+    // 1. Linear Probing
+    // 2. Quadratic Probing
+    // 3. Double Hashing
+
+
 </script>
 </body>
 </html>
