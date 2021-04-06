@@ -9,22 +9,22 @@
 
     /** General Hash Table **/
 
-    // 以往使用 array 當作 table, key 是 index, 會產生 Key 的範圍非常大, 但 Key 的數量相對很少, 會浪費記憶體空
-    // 例如: key 只有 3 個值 2 51 99, 但是 table size 就至少要有 100
-    // 目的: hash table 希望能夠將存放 data table 的 size 降到真正有使用到的 Key 數量減少記憶體浪費
-    // key = k = 用來放入 hash function 並產出 mapping table index 的
-    // table = m = 實際上 table 的大小
+        // 以往使用 array 當作 table, key 是 index, 會產生 Key 的範圍非常大, 但 Key 的數量相對很少, 會浪費記憶體空
+        // 例如: key 只有 3 個值 2 51 99, 但是 table size 就至少要有 100
+        // 目的: hash table 希望能夠將存放 data table 的 size 降到真正有使用到的 Key 數量減少記憶體浪費
+        // key = k = 用來放入 hash function 並產出 mapping table index 的
+        // table = m = 實際上 table 的大小
 
 
     const changeHashValue = 37;
 
     const HashTable = function () {
-        this.table = {};
+        this.table = [];
         this.hash = null;
     }
 
     // hash function
-    HashTable.prototype.getHashTableCode = function (key) {
+    HashTable.prototype.getHashCode = function (key) {
         this.hash = null;
         for (let i = 0; i < key.length; i++) {
             // charCodeAt(string) 會回傳指定字串內字元的 Unicode (中文也可以)
@@ -36,13 +36,13 @@
 
     HashTable.prototype.hasItem = function (key) {
         // 使用 key 讓 hash function 產生的 position
-        const position = this.getHashTableCode(key);
+        const position = this.getHashCode(key);
         return this.table.hasOwnProperty(position);
     };
 
     HashTable.prototype.addItem = function (key, value) {
         // 使用 key 讓 hash function 產生的 position
-        const position = this.getHashTableCode(key);
+        const position = this.getHashCode(key);
         // 對應 position 往 hash table 放入 value
         this.table[position] = value;
     }
@@ -53,7 +53,7 @@
 
     HashTable.prototype.getItem = function (key) {
         // 使用 key 讓 hash function 產生的 position
-        const position = this.getHashTableCode(key);
+        const position = this.getHashCode(key);
         // 透過 position 找到對應存在  hash table 的 value 並回傳
         return this.table[position];
     }
@@ -61,7 +61,7 @@
     HashTable.prototype.removeItem = function (key) {
         if (this.hasItem(key)) {
             // 使用 key 讓 hash function 產生的 position
-            const position = this.getHashTableCode(key);
+            const position = this.getHashCode(key);
             // 由於不能改變陣列長度(因為會影響到其它對應位置), 所以將值給定 undefined
             this.table[position] = undefined;
             return true;
@@ -87,15 +87,15 @@
 
     /** Separate Chaining (Linked List 解法) **/
 
-    // 優點:
-    // 1. 可以自由的增加 key 去存放, 不用在意衝突
-    // 2. 相較 open addressing 解法更為簡單粗暴
+        // 優點:
+        // 1. 可以自由的增加 key 去存放, 不用在意衝突
+        // 2. 相較 open addressing 解法更為簡單粗暴
 
-    // 缺點:
-    // 1. linked list 使用了多餘的記憶體空間去存放 value
-    // 2. 若是 chaining 產生多個, 要尋找 linked list 中某個值, 必須從頭開始找
+        // 缺點:
+        // 1. linked list 使用了多餘的記憶體空間去存放 value
+        // 2. 若是 chaining 產生多個, 要尋找 linked list 中某個值, 必須從頭開始找
 
-    // 放入 bucket(linked list) 中的節點, 會記錄上一個與下一個
+        // 放入 bucket(linked list) 中的節點, 會記錄上一個與下一個
     const LinkedNode = function (value, prev, next) {
             this.value = value;
             this.next = null;
@@ -115,13 +115,13 @@
         }
     }
 
-    const SeparateChainingHashTable = function () {
+    const SeparateChaining = function () {
         this.table = [];
         this.hash = null;
     }
 
     // hash function
-    SeparateChainingHashTable.prototype.getHashTableCode = function (key) {
+    SeparateChaining.prototype.getHashCode = function (key) {
         this.hash = null;
         for (let i = 0; i < key.length; i++) {
             // charCodeAt(string) 會回傳指定字串內字元的 Unicode (中文也可以)
@@ -131,8 +131,8 @@
         return this.hash % changeHashValue;
     }
 
-    SeparateChainingHashTable.prototype.addItem = function (key, value) {
-        const position = this.getHashTableCode(key);
+    SeparateChaining.prototype.addItem = function (key, value) {
+        const position = this.getHashCode(key);
         const bucket = new LinkList(value);
         const bucketNode = new LinkedNode(value, null, null);
 
@@ -157,15 +157,15 @@
         bucketNode.prev = currentBucketNode;
     }
 
-    const separateChainingHash = new SeparateChainingHashTable();
+    const separateChainingHash = new SeparateChaining();
 
-    separateChainingHash.addItem('測試', '我是 value');
-    separateChainingHash.addItem('測試', '我是 value 2');
-    separateChainingHash.addItem('測試', '我是 value 3');
-    separateChainingHash.addItem('測試2', '1111');
-    separateChainingHash.addItem('測試3', '2222');
-
-    console.log(separateChainingHash);
+    // separateChainingHash.addItem('測試', '我是 value');
+    // separateChainingHash.addItem('測試', '我是 value 2');
+    // separateChainingHash.addItem('測試', '我是 value 3');
+    // separateChainingHash.addItem('測試2', '1111');
+    // separateChainingHash.addItem('測試3', '2222');
+    //
+    // console.log(separateChainingHash);
 
     /** Open Addressing 解法 **/
 
@@ -176,6 +176,77 @@
     // 1. Linear Probing
     // 2. Quadratic Probing
     // 3. Double Hashing
+
+
+    /** Linear Probing **/
+
+    const LinearProbing = function (size) {
+        // hash 的 table 大小
+        this.size = size;
+        // 用來記錄 table 剩餘的空間有多少
+        this.lastSpace = size;
+
+        // 記錄 hash 之後的全部 key 的 array
+        this.keys = this.initArray(size);
+        // 記錄 hash 之後的全部 value array
+        this.values = this.initArray(size);
+    }
+
+    LinearProbing.prototype.addItem = function (key, value) {
+        // 檢查 table 剩餘空間, 如果為 0 則跳出已滿的訊息
+        if (this.lastSpace <= 0) {
+            throw 'hash table is full';
+        }
+
+        let hashedIndex = this.getHashCode(key);
+
+        // 檢查 table 中當前的 key (index) 是否有值, 有的話 +1 繼續往下取餘數當 index
+        while (this.keys[hashedIndex] !== null) {
+            hashedIndex++;
+            hashedIndex = hashedIndex % this.size;
+        }
+        // 把當前確定的 key (index), 放入兩個紀錄的 array 中
+        this.keys[hashedIndex] = key;
+        this.values[hashedIndex] = value;
+
+        // table 剩餘空間 -1
+        this.lastSpace--;
+    }
+
+    LinearProbing.prototype.getItem = function (key, value) {
+        let hashedIndex = this.getHashCode(key);
+
+        // 檢查 key, value 是否相同, 不同的話 key (index) +1 繼續往下取餘數當 index 來找
+        while (this.values[hashedIndex] !== value) {
+            hashedIndex++;
+            hashedIndex = hashedIndex % this.size;
+        }
+        return this.values[hashedIndex]
+    }
+
+    LinearProbing.prototype.getHashCode = function (key) {
+        return key % this.size;
+    }
+
+    LinearProbing.prototype.initArray = function (size) {
+        let array = [];
+        for (let i = 0; i < size; i++) {
+            array.push(null);
+        }
+        return array;
+    }
+
+    let linearProbing = new LinearProbing(9);
+    linearProbing.addItem(7, '重覆1');
+    linearProbing.addItem(7, '重覆2');
+    linearProbing.addItem(7, '重覆3');
+    linearProbing.addItem(2, '2');
+    linearProbing.addItem(3, '3');
+    linearProbing.addItem(4, '4');
+    linearProbing.addItem(9, '9');
+    linearProbing.addItem(9, '重覆9');
+
+    console.log(linearProbing.getItem(7, '重覆3'));
 
 
 </script>
