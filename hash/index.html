@@ -171,14 +171,21 @@
 
     // Open Addressing 當遇到 hash chaining 並不會在同一個 key 位子再產生額外空間, 而是會去尋找下一個位子
     // 例如: 往下找 key + 1, 沒位子就一直往下找, 直到有空間, 稱為 probing
+    // Open Addressing 使用的 hash function 有兩個參數, 一個是資料的Key, 另一個是 probing 的 '次數'
 
     // 常見的 probing 有 3種:
     // 1. Linear Probing
     // 2. Quadratic Probing
     // 3. Double Hashing
 
-
     /** Linear Probing **/
+
+        // 優點:
+        // 1. 相比 linked list 更節省記憶體
+
+        // 缺點:
+        // 1. 若是 hash function 沒設計好, 可能導致 table 中很多位子是空的
+        // 2. 若是 hash key 產生重覆的話, 都必須重覆跑 index +1 的檢查找空位子, 效能不好
 
     const LinearProbing = function (size) {
         // hash 的 table 大小
