@@ -169,9 +169,11 @@
 
     /** Open Addressing 解法 **/
 
-    // Open Addressing 當遇到 hash chaining 並不會在同一個 key 位子再產生額外空間, 而是會去尋找下一個位子
+    // 1. Open Addressing 當遇到 hash chaining 並不會在同一個 key 位子再產生額外空間, 而是會去尋找下一個位子
     // 例如: 往下找 key + 1, 沒位子就一直往下找, 直到有空間, 稱為 probing
-    // Open Addressing 使用的 hash function 有兩個參數, 一個是資料的Key, 另一個是 probing 的 '次數'
+    // 2. Open Addressing 使用的 hash function 有兩個參數, 一個是資料的Key, 另一個是 probing 的 '次數'
+    // 3. Probing 順序會影響到 hash table 的操作 (insert、delete、search) 之間的時間複雜度
+    // 4. Probing 的次數最多不會超過 table 大小 m, 可理解為從第 0 次到第 m−1 次
 
     // 常見的 probing 有 3種:
     // 1. Linear Probing
@@ -184,8 +186,12 @@
         // 1. 相比 linked list 更節省記憶體
 
         // 缺點:
-        // 1. 若是 hash function 沒設計好, 可能導致 table 中很多位子是空的
-        // 2. 若是 hash key 產生重覆的話, 都必須重覆跑 index +1 的檢查找空位子, 效能不好
+        // 1. 若是 table 裝滿了就等於失敗, 需要調整 table 大小
+        // 2. 只要 '起點' 決定, probing sequence 就決定(index 不斷 +1)
+        // 3. probing 產生順序是很規律的, 如果 table 中某個區塊已經擠滿了 item 若有某個 key 又被分配到該區塊的附近,
+        //    就會使得該區塊很擠, 這種現象稱為'一次聚集' (primary clustering), 要跑多次才能找到合適的位置
+        // 4. 所有 item 都只有一種 probing 順序, 那麼在加入第一個 item 時,
+        //    只需要 O(1) 的時間, 但是再繼續加入 item 時, 就要考慮 '現有item數' 時間複雜度增加為 O(#items in table)。
 
     const LinearProbing = function (size) {
         // hash 的 table 大小
