@@ -188,21 +188,34 @@
         // 缺點:
         // 1. 若是 table 裝滿了就等於失敗, 需要調整 table 大小
         // 2. 只要 '起點' 決定, probing sequence 就決定(index 不斷 +1)
-        // 3. probing 產生順序是很規律的, 如果 table 中某個區塊已經擠滿了 item 若有某個 key 又被分配到該區塊的附近,
+        // 3. 當 key 出現重覆時, 無法只透過 key 找到某個 value, 必須連值都給它去找
+        // 4. probing 產生順序是很規律的, 如果 table 中某個區塊已經擠滿了 item 若有某個 key 又被分配到該區塊的附近,
         //    就會使得該區塊很擠, 這種現象稱為'一次聚集' (primary clustering), 要跑多次才能找到合適的位置
-        // 4. 所有 item 都只有一種 probing 順序, 那麼在加入第一個 item 時,
+        // 5. 所有 item 都只有一種 probing 順序, 那麼在加入第一個 item 時,
         //    只需要 O(1) 的時間, 但是再繼續加入 item 時, 就要考慮 '現有item數' 時間複雜度增加為 O(#items in table)。
 
     const LinearProbing = function (size) {
-        // hash 的 table 大小
-        this.size = size;
-        // 用來記錄 table 剩餘的空間有多少
-        this.lastSpace = size;
+            // hash table 的 大小
+            this.size = size;
+            // 用來記錄 table 剩餘的空間有多少
+            this.lastSpace = size;
 
-        // 記錄 hash 之後的全部 key 的 array
-        this.keys = this.initArray(size);
-        // 記錄 hash 之後的全部 value array
-        this.values = this.initArray(size);
+            // 記錄 hash 之後的全部 key 的 array
+            this.keys = this.initArray(size);
+            // 記錄 hash 之後的全部 value array
+            this.values = this.initArray(size);
+        }
+
+    LinearProbing.prototype.getHashCode = function (key) {
+        return key % this.size;
+    }
+
+    LinearProbing.prototype.initArray = function (size) {
+        let array = [];
+        for (let i = 0; i < size; i++) {
+            array.push(null);
+        }
+        return array;
     }
 
     LinearProbing.prototype.addItem = function (key, value) {
@@ -237,18 +250,6 @@
         return this.values[hashedIndex]
     }
 
-    LinearProbing.prototype.getHashCode = function (key) {
-        return key % this.size;
-    }
-
-    LinearProbing.prototype.initArray = function (size) {
-        let array = [];
-        for (let i = 0; i < size; i++) {
-            array.push(null);
-        }
-        return array;
-    }
-
     let linearProbing = new LinearProbing(9);
     linearProbing.addItem(7, '重覆1');
     linearProbing.addItem(7, '重覆2');
@@ -260,6 +261,83 @@
     linearProbing.addItem(9, '重覆9');
 
     console.log(linearProbing.getItem(7, '重覆3'));
+
+    /** Quadratic Probing **/
+
+        // 優點:
+        // 1. 相比 Linear Probing 更能避免 primary clustering 的狀況發生
+
+        // 缺點:
+        // 跟 Linear Probing 相同, '起點' 決定之後 probing sequence 就決定了 (index 次數一直往下乘平方後取餘)
+
+
+    const QuadraticProbing = function (size) {
+            // hash table 的 大小
+            this.size = size;
+            // 用來記錄 table 剩餘的空間有多少
+            this.lastSpace = size;
+
+            // 記錄 hash 之後的全部 key 的 array
+            this.keys = this.initArray(size);
+            // 記錄 hash 之後的全部 value array
+            this.values = this.initArray(size);
+        }
+
+    QuadraticProbing.prototype.getHashCode = function (key) {
+        return key % this.size;
+    }
+
+    QuadraticProbing.prototype.initArray = function (size) {
+        let array = [];
+        for (let i = 0; i < size; i++) {
+            array.push(null);
+        }
+        return array;
+    }
+
+    QuadraticProbing.prototype.getHashCode = function (key) {
+        return key % this.size;
+    }
+
+    QuadraticProbing.prototype.addItem = function (key, value) {
+        // 檢查 table 剩餘空間, 如果為 0 則跳出已滿的訊息
+        if (this.lastSpace <= 0) {
+            throw 'hash table is full';
+        }
+
+        let hashedIndex = this.getHashCode(key);
+
+        // 紀錄每次檢查的次數
+        let freq = 0;
+
+        // 檢查 table 中當前的 key (index) 是否有值, 有的話用'每次當下次數的平方'跟 'table size' 去取餘數
+        while (this.keys[hashedIndex] !== null) {
+            // hashedIndex = freq * freq;
+            freq++
+            hashedIndex = (key + (freq * freq)) % this.size;
+        }
+        // 把當前確定的 key (index), 放入兩個紀錄的 array 中
+        this.keys[hashedIndex] = key;
+        this.values[hashedIndex] = value;
+
+        // table 剩餘空間 -1
+        this.lastSpace--;
+    }
+
+    let quadraticProbing = new QuadraticProbing(20);
+    quadraticProbing.addItem(96, '一');
+    quadraticProbing.addItem(48, '二');
+    quadraticProbing.addItem(63, '三');
+    quadraticProbing.addItem(29, '四');
+    quadraticProbing.addItem(87, '五');
+    quadraticProbing.addItem(77, '六');
+    quadraticProbing.addItem(48, '七');
+    quadraticProbing.addItem(65, '八');
+    quadraticProbing.addItem(69, '九');
+    quadraticProbing.addItem(94, '十');
+    quadraticProbing.addItem(61, '十一');
+
+    console.log(quadraticProbing);
 
 
 </script>
