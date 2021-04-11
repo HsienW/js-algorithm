@@ -18,8 +18,31 @@
     // 時間複雜度平均為 O(n log n)
     // 時間複雜度最差的情況為 Ο(n2), 就是 data 已經完整排好了, 等於全部從頭再跑一次多於的動作
 
-    const array = [14, 84, 24, 5, 9];
+    const array = [14, 84, 24, 5, 9, 77 ,94, 108, 21, 8];
 
+    function quickSort(data) {
+        if (data.length <= 1) {
+            return data;
+        }
+
+        let leftArray = [];
+        let rightArray = [];
+        let pivot = data[0];
+
+        for (let i = 1; i < data.length; i++) {
+            if (data[i] < pivot) {
+                leftArray.push(data[i]);
+            } else {
+                rightArray.push(data[i]);
+            }
+        }
+
+        return [...quickSort(leftArray), pivot, ...quickSort(rightArray)];
+    }
+
+   const test = quickSort(array);
+
+   console.log(test);
 
 
 </script>
