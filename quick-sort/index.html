@@ -24,7 +24,7 @@
         // 1. 每次 call 都會使用到兩個 array 空間, 產生空間複雜度
         // 2. 遇到 data 量大效能不佳
 
-    const array = [14, 84, 24, 5, 9, 77, 94, 108, 21, 8];
+    const array = [15, 12, 3, 2, 7];
 
     function quickSort(data) {
         if (data.length <= 1) {
@@ -46,39 +46,41 @@
         return [...quickSort(leftArray), pivot, ...quickSort(rightArray)];
     }
 
-    const test = quickSort(array);
+    // const test = quickSort(array);
 
-    console.log(test);
+    // console.log(test);
 
 
     /** 使用操作 index 實作的版本 **/
 
-    function changeValue(A, i, j) {
-        const t = A[i];
-        A[i] = A[j];
-        A[j] = t;
-    }
-
     function quickSortUseIndex(data) {
-        let startIndex = -1;
-        // let endIndex = null;
-        let pivot = data[data.length - 1];
 
-        for (let i = 0; i < data.length; i++) {
-            if (data[i] < pivot) {
-                startIndex++;
-                let template = data[startIndex];
-                data[startIndex] = data[i];
-                data[i] = template;
+        const changeIndex = function (changeData) {
+            let startIndex = -1;
+            let pivot = changeData[changeData.length - 1];
+
+            for (let i = 0; i < changeData.length - 1; i++) {
+                if (changeData[i] < pivot) {
+                    startIndex++;
+                    let template = changeData[startIndex];
+                    changeData[startIndex] = changeData[i];
+                    changeData[i] = template;
+                }
             }
-            //
-            // if (i === data.length - 1) {
-            //     let template = data[startIndex];
-            //     data[startIndex] = pivot;
-            //     data[i] = template;
-            // }
+
+            let pivotIndex = startIndex + 1;
+            let template = changeData[pivotIndex];
+            changeData[pivotIndex] = pivot;
+            changeData[changeData.length - 1] = template;
+
+            return {changeData: changeData, pivotIndex: pivotIndex};
         }
-        return data;
+
+        const {changeData, pivotIndex} = changeIndex(data);
+        const leftData = changeIndex(changeData.slice(0, pivotIndex));
+        const rightData = changeIndex(changeData.slice(pivotIndex, changeData.length));
+
+        return [...leftData.changeData, ...rightData.changeData]
     }
 
     console.log(quickSortUseIndex(array));
