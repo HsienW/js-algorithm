@@ -53,37 +53,55 @@
 
     /** 使用操作 index 實作的版本 **/
 
-    function quickSortUseIndex(data) {
-
-        const changeIndex = function (changeData) {
-            let startIndex = -1;
-            let pivot = changeData[changeData.length - 1];
-
-            for (let i = 0; i < changeData.length - 1; i++) {
-                if (changeData[i] < pivot) {
-                    startIndex++;
-                    let template = changeData[startIndex];
-                    changeData[startIndex] = changeData[i];
-                    changeData[i] = template;
-                }
-            }
-
-            let pivotIndex = startIndex + 1;
-            let template = changeData[pivotIndex];
-            changeData[pivotIndex] = pivot;
-            changeData[changeData.length - 1] = template;
-
-            return {changeData: changeData, pivotIndex: pivotIndex};
-        }
-
-        const {changeData, pivotIndex} = changeIndex(data);
-        const leftData = changeIndex(changeData.slice(0, pivotIndex));
-        const rightData = changeIndex(changeData.slice(pivotIndex, changeData.length));
-
-        return [...leftData.changeData, ...rightData.changeData]
+    function changeValue(data, leftIndex, rightIndex) {
+        let template = data[leftIndex];
+        data[leftIndex] = data[rightIndex];
+        data[rightIndex] = template;
     }
 
-    console.log(quickSortUseIndex(array));
+    function partitionData(data, leftIndex, rightIndex) {
+        let pivot = data[Math.floor((leftIndex + rightIndex) / 2)];
+        let i = leftIndex;
+        let j = rightIndex;
+
+        while (i <= j) {
+            while (data[i] < pivot) {
+                i++;
+            }
+            while (data[j] < pivot) {
+                j--;
+            }
+            if (i <= j) {
+                changeValue(data, i, j)
+                i++;
+                j--;
+            }
+        }
+        return i;
+    }
+
+    function sort(data, leftIndex, rightIndex) {
+        let pivotIndex = null;
+
+        if (data.length > 1) {
+            pivotIndex = partitionData(data, leftIndex, rightIndex);
+
+            if (leftIndex < pivotIndex - 1) {
+                sort(data, leftIndex, pivotIndex - 1);
+            }
+            if (pivotIndex < rightIndex) {
+                sort(data, pivotIndex, rightIndex);
+            }
+        }
+        console.log(data);
+        return data;
+    }
+
+    function quickSortUseIndex(data) {
+        sort(data, 0, data.length - 1);
+    }
+
+    quickSortUseIndex(array);
 
 
 </script>
