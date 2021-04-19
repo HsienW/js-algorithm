@@ -24,7 +24,7 @@
         // 1. 每次 call 都會使用到兩個 array 空間, 產生空間複雜度
         // 2. 遇到 data 量大效能不佳
 
-    const array = [15, 12, 3, 2, 7];
+    const array = [15, 12, 3, 2, 7]; // 7 3 12 2 15
 
     function quickSort(data) {
         if (data.length <= 1) {
@@ -93,12 +93,10 @@
                 sort(data, pivotIndex, rightIndex);
             }
         }
-        console.log(data);
-        return data;
     }
 
     function quickSortUseIndex(data) {
-        sort(data, 0, data.length - 1);
+        const test = sort(data, 0, data.length - 1);
     }
 
     quickSortUseIndex(array);
