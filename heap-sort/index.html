@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Heap Sort</title>
+</head>
+<body>
+<script>
+
+    /** 排序規則 **/
+        // 1. 先拿 arr 產生一個大根堆
+        // 2. 取得大根推 size 下標
+        // 2. 由大根堆每次彈出 root 放到 arr 最後一個位子
+        // 3. 大根堆的 heap size-- (縮減每次堆排 heapify 的過程)
+        // 4. 取出當前最後一個數, 與 root 交換 (做 heap insert)
+        // 5. 循環直到 heap size 撞到邊界, 排序完成
+
+
+    const array = [15, 12, 3, 2, 7, 10, 9, 7, 7, 21, 40, 33, 26];
+
+    function swap(data, i, j) {
+        let temp = data[i];
+        data[i] = data[j];
+        data[j] = temp;
+    }
+
+    // 某個數在當前 Index 位子, 跟父位子比較, 不斷往上移動, 直到比父位子數小為止
+    function heapInset(data, index) {
+        // 父位子的數
+        let parent = Math.floor((index - 1) / 2) < 0 ? 0 : Math.floor((index - 1) / 2);
+
+        while (data[index] > data[parent]) {
+            swap(data, index, parent);
+            // 移動完當前層, 更新 Index 繼續往上比, 如果小於 0 就用 0 當 index
+            index = Math.floor((index - 1) / 2) < 0 ? 0 : Math.floor((index - 1) / 2);
+        }
+    }
+
+    function heapify(data, index, heapSize) {
+        let left = index * 2 + 1; // 左位子 index;
+
+        while (left < heapSize) { // 如果小於表示還有子位子可以比較, 相等為結束
+            // 左右兩點取最大, 如果存在右位子, 沒有越界, 且右位子數字 > 左位子數字, 則選右 index, 反之選左 index
+            let maxIndex = (left + 1 < heapSize && data[left + 1] > data[left]) ? left + 1 : left;
+
+            // 大的子位子和父位子比較, 取得最大的 index
+            maxIndex = data[maxIndex] > data[index] ? maxIndex : index;
+
+            if(maxIndex === index) {
+                break;
+            }
+
+            // 往下走, 把最大的子跟父, 交換位子
+            swap(data, index, maxIndex);
+            // 交換完, index 往下走
+            index = maxIndex;
+            // 刷新左位子 index
+            left = index * 2 + 1;
+        }
+    }
+
+    function buildHeap(array) {
+        // 从最后一个非叶子节点开始，逐个向上调整
+        for (let i = Math.floor(array.length / 2) - 1; i >= 0; i--) {
+            heapify(array, i, array.length);
+        }
+    }
+
+    function heapSort(data) {
+        if (data === null || data.length <= 2) {
+            return data;
+        }
+
+        // 產生大根堆(排好)
+        // for (let i = 0; i < data.length; i++) { /** O(N) **/
+        //     heapInset(data, i);  /** O(logN) 樹的高度 = 數組一半 **/
+        // }
+
+        // 產生大根堆(排好) 不一定要使用 inset, 可以直接排好
+        for(let i = data.length - 1; i >= 0; i--) {
+            heapify(data, i, data.length);
+        }
+
+        // 透過大根堆開始進行排序
+        let heapSize = data.length;
+        // 由大根堆每次彈出 root 放到 arr 最後一個位子
+        swap(data, 0, --heapSize);
+
+        // 大根堆的 heap size-- (縮減每次堆排 heapify 的過程)
+        // heapSize--;
+
+        // 循環直到 heap size 撞到邊界, 排序完成
+        while (heapSize > 0) {
+            // 堆下沉, 排好每個子數的大根堆
+            heapify(data, 0, heapSize);
+            // 由大根堆每次彈出 root 放到 arr 最後一個位子
+            swap(data, 0, --heapSize);
+            // 大根堆的 heap size-- (縮減每次堆排 heapify 的過程)
+            // heapSize;
+        }
+        return data;
+    }
+
+    console.log(heapSort(array));
+
+</script>
+</body>
+</html>
