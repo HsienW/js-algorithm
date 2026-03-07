@@ -19,12 +19,11 @@
     // 時間複雜度最差的情況為 Ο(n2), 就是 data 已經完整排好了, 等於全部從頭再跑一次多於的動作
 
     /** 使用兩個 array 實作的版本 **/
-
         // 缺點:
         // 1. 每次 call 都會使用到兩個 array 空間, 產生空間複雜度
         // 2. 遇到 data 量大效能不佳
 
-    const array = [15, 12, 3, 2, 7]; // 7 3 12 2 15
+    const array = [0, 15, 12, 3, 2, 7, 10, 0, 9, 7, 7, 21, 40, 33, 26, 55, 99, -2]; // 7 3 12 2 15
 
     function quickSort(data) {
         if (data.length <= 1) {
@@ -46,62 +45,48 @@
         return [...quickSort(leftArray), pivot, ...quickSort(rightArray)];
     }
 
-    // const test = quickSort(array);
 
-    // console.log(test);
+    function partition(data, left, right) {
+        const value = data[right];
+        let i = left
 
-
-    /** 使用操作 index 實作的版本 **/
-
-    function changeValue(data, leftIndex, rightIndex) {
-        let template = data[leftIndex];
-        data[leftIndex] = data[rightIndex];
-        data[rightIndex] = template;
-    }
-
-    function partitionData(data, leftIndex, rightIndex) {
-        let pivot = data[Math.floor((leftIndex + rightIndex) / 2)];
-        let i = leftIndex;
-        let j = rightIndex;
-
-        while (i <= j) {
-            while (data[i] < pivot) {
+        for (let j = left; j < right; j++) {
+            if (data[j] < value) {
+                [data[i], data[j]] = [data[j], data[i]];
                 i++;
-            }
-            while (data[j] < pivot) {
-                j--;
-            }
-            if (i <= j) {
-                changeValue(data, i, j)
-                i++;
-                j--;
             }
         }
+
+        [data[i], data[right]] = [data[right], data[i]];
+
         return i;
     }
 
-    function sort(data, leftIndex, rightIndex) {
-        let pivotIndex = null;
-
-        if (data.length > 1) {
-            pivotIndex = partitionData(data, leftIndex, rightIndex);
-
-            if (leftIndex < pivotIndex - 1) {
-                sort(data, leftIndex, pivotIndex - 1);
-            }
-            if (pivotIndex < rightIndex) {
-                sort(data, pivotIndex, rightIndex);
-            }
+    function quick(arr) {
+        if (!Array.isArray(arr) || arr.length <= 1) {
+            return arr;
         }
+
+        const stack = [];
+        stack.push({left: 0, right: arr.length - 1});
+
+        while (stack.length > 0) {
+            const {left, right} = stack.pop();
+
+            if (left >= right) {
+                continue;
+            }
+
+            const pIndex = partition(arr, left, right);
+
+            stack.push({left: left, right: pIndex - 1});
+            stack.push({left: pIndex + 1, right: right});
+        }
+
+        return arr;
     }
 
-    function quickSortUseIndex(data) {
-        const test = sort(data, 0, data.length - 1);
-    }
-
-    quickSortUseIndex(array);
-
-
+    console.log(quick(array))
 </script>
 </body>
 </html>
